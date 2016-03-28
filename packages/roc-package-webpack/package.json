@@ -1,0 +1,34 @@
+{
+  "name": "roc-package-webpack",
+  "version": "1.0.0-alpha.0",
+  "description": "Package providing Webpack support for Roc",
+  "main": "lib/index.js",
+  "bin": "bin/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "keywords": [
+    "roc",
+    "roc-package",
+    "webpack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rocjs/roc-package-webpack.git"
+  },
+  "author": "VG",
+  "license": "MIT",
+  "dependencies": {
+    "roc-package-base": "^1.0.0-alpha"
+  },
+  "devDependencies": {
+    "babel-eslint": "~5.0.0",
+    "eslint": "~1.10.3",
+    "eslint-config-vgno": "~5.0.0"
+  }
+}
