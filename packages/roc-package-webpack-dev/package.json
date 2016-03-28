@@ -1,6 +1,6 @@
 {
   "name": "roc-package-webpack-dev",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "Package providing Webpack support for Roc (Development)",
   "main": "lib/index.js",
   "bin": "bin/index.js",
