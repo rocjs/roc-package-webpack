@@ -25,12 +25,12 @@ export default {
             action: () => createBuilder
         },
         build: {
-            description: 'Build with Webpack',
+            description: 'Build with Webpack.',
             hook: 'run-build-command',
             action: () => build
         },
         dev: {
-            description: 'Run in development mode using Webpack',
+            description: 'Run in development mode using Webpack.',
             hook: 'run-dev-command',
             action: () => dev
         }
@@ -47,7 +47,8 @@ export default {
             }]
         },
         'get-webpack-targets': {
-            description: 'Used to inform which targets that should be considered as Webpack targets.',
+            description: 'Used to inform which targets that should be considered as Webpack targets. Actions should ' +
+                'concat the previousValue to build the complete value.',
             initialValue: [],
             returns: isArray(isString)
         },

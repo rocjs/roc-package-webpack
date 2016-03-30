@@ -9,6 +9,7 @@
 * [roc-package-webpack-dev](#roc-package-webpack-dev)
   * [build-webpack](#build-webpack)
   * [create-watchers](#create-watchers)
+  * [get-webpack-targets](#get-webpack-targets)
 
 ## roc-package-base-dev
 
@@ -37,7 +38,7 @@ __Expected return value:__ `[String]`
 Use to add things that should react to the build command being called.
 
 __Initial value:__ _Nothing_  
-__Expected return value:__ _Nothing_
+__Expected return value:__ `Function`
 
 #### Arguments
 
@@ -79,3 +80,10 @@ Used to add watchers that should follow a specific format.
 
 __Initial value:__ `{}`  
 __Expected return value:__ `{Function}`
+
+### get-webpack-targets
+
+Used to inform which targets that should be considered as Webpack targets. Actions should concat the previousValue to build the complete value.
+
+__Initial value:__ `[]`  
+__Expected return value:__ `[String]`
