@@ -6,7 +6,7 @@ const config = {
             path: '/',
             mode: 'dist',
             disableProgressbar: false,
-            outputName: 'app'
+            name: 'app'
         }
     }
 };
