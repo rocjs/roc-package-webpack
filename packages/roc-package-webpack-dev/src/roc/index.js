@@ -1,4 +1,4 @@
-import { isString, isObject, isFunction } from 'roc/validators';
+import { isString, isObject, isFunction, isArray } from 'roc/validators';
 import createBuilder from '../builder';
 
 import build from '../actions/build';
@@ -25,10 +25,12 @@ export default {
             action: () => createBuilder
         },
         build: {
+            description: 'Build with Webpack',
             hook: 'run-build-command',
             action: () => build
         },
         dev: {
+            description: 'Run in development mode using Webpack',
             hook: 'run-dev-command',
             action: () => dev
         }
@@ -43,6 +45,11 @@ export default {
                 validation: isString,
                 description: 'The target for which the Webpack configuration should be build for.'
             }]
+        },
+        'get-webpack-targets': {
+            description: 'Used to inform which targets that should be considered as Webpack targets.',
+            initialValue: [],
+            returns: isArray(isString)
         },
         'create-watchers': {
             description: 'Used to add watchers that should follow a specific format.',

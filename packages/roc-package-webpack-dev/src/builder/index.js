@@ -24,7 +24,7 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
 
     const entry = getAbsolutePath(getValueFromPotentialObject(buildSettings.input, target));
     const outputPath = getAbsolutePath(getValueFromPotentialObject(buildSettings.output, target));
-    const outputName = getValueFromPotentialObject(buildSettings.outputName, target);
+    const outputName = getValueFromPotentialObject(buildSettings.name, target);
 
     if (!fileExists(entry)) {
         console.log(yellow(`Could not find the entry file for ${underline(target)} at ` +
@@ -56,8 +56,8 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
     */
     buildConfig.output = {
         path: outputPath,
-        filename: '[name].roc.js',
-        chunkFilename: '[name].roc.js'
+        filename: '[name].js',
+        chunkFilename: '[name].js'
     };
 
     /**

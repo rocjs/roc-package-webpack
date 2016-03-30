@@ -64,6 +64,14 @@ const createWatcher = (verbose, settings, target, rocBuilder, watcher) => {
  * @returns {Function} - A correct Roc action.
  */
 export default ({ verbose, settings }) => (targets) => () => {
+    const webpackTargets = invokeHook('get-webpack-targets');
+
+    const validTargets = targets.filter((target) => webpackTargets.some((webpackTarget) => webpackTarget === target));
+
+    if (validTargets.length === 0) {
+        return Promise.resolve();
+    }
+
     // Make sure that we are in dev mode
     if (settings.build.mode !== 'dev') {
         if (settings.build.mode && settings.build.mode !== config.settings.build.mode) {
