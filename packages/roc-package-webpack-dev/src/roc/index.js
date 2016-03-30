@@ -38,7 +38,7 @@ export default {
     hooks: {
         'build-webpack': {
             description: 'Used to create the final Webpack configuration object.',
-            initialValue: { buildConfig: {}, builder: require('webpack')},
+            initialValue: {},
             returns: isObject(),
             arguments: [{
                 name: 'target',
