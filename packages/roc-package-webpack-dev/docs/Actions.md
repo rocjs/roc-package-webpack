@@ -29,10 +29,14 @@ __Connects to hook:__ `before-clean`
 
 ### build
 
+Build with Webpack.
+
 __Connects to extension:__ Not specified  
 __Connects to hook:__ `run-build-command`  
 
 ### dev
+
+Run in development mode using Webpack.
 
 __Connects to extension:__ Not specified  
 __Connects to hook:__ `run-dev-command`  

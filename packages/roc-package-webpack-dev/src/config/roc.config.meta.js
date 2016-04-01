@@ -12,7 +12,7 @@ const meta = {
                 path: 'The basepath for the application.',
                 mode: 'What mode the application should be built for. Possible values are "dev" and "dist".',
                 disableProgressbar: 'Should the progress bar be disabled for builds.',
-                outputName: 'The name of the generated application bundle, will be appended "roc.js".'
+                name: 'The name of the generated application bundle.'
             }
         },
 
@@ -23,7 +23,7 @@ const meta = {
                 disableProgressbar: isBoolean,
                 input: isArrayOrSingle(isPath),
                 output: isArrayOrSingle(isPath),
-                outputName: isArrayOrSingle(isString)
+                name: isArrayOrSingle(isString)
             }
         }
     },

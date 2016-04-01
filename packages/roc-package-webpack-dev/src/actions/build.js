@@ -9,7 +9,7 @@ import { invokeHook } from '../roc/util';
 const multi = new MultiProgress();
 
 const handleCompletion = (results) => {
-    console.log(green('\nBuild completed!\n'));
+    console.log(green('\nWebpack build completed!\n'));
 
     for (const result of results) {
         if (result) {
@@ -27,14 +27,14 @@ const handleCompletion = (results) => {
 const handleError = (verbose) => (error) => {
     const errorMessage = error.target ? ' for ' + bold(error.target) : '';
 
-    console.log(red(`\n\nBuild failed${errorMessage}\n`));
+    console.log(red(`\n\nWebpack build failed${errorMessage}\n`));
 
     console.log(red(error.message));
 
     if (verbose) {
         console.log(error.stack);
     } else {
-        console.log('\nRun with verbose for more output.\n');
+        console.log('\nRun with verbose for more output. (--verbose)\n');
     }
     /* eslint-disable no-process-exit */
     // Make sure we do not continue trying to build other targets since we want everything to complete
@@ -106,16 +106,24 @@ const build = (rocBuilder, target, config, verbose) => {
  * @returns {Function} - A correct Roc action.
  */
 export default ({ verbose, settings }) => (targets) => () => {
+    const webpackTargets = invokeHook('get-webpack-targets');
+
+    const validTargets = targets.filter((target) => webpackTargets.some((webpackTarget) => webpackTarget === target));
+
+    if (validTargets.length === 0) {
+        return Promise.resolve();
+    }
+
     /* eslint-disable no-console */
     console.log(cyan(`Starting the builder using "${settings.build.mode}" as the mode.\n`));
     /* eslint-enable */
 
-    const promises = targets.map((target) => {
+    const promises = validTargets.map((target) => {
         const builder = invokeHook('build-webpack', target);
         return build(builder, target, settings, verbose);
     });
 
-    return Promise.all(promises)
+    return () => Promise.all(promises)
         .then(handleCompletion)
         .catch(handleError(verbose));
 };
