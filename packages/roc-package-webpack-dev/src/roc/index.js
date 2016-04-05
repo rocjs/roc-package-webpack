@@ -19,7 +19,6 @@ export default {
     ],
     actions: {
         webpack: {
-            extension: name,
             hook: 'build-webpack',
             description: 'Adds base Webpack configuration.',
             action: () => createBuilder

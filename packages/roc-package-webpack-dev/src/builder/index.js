@@ -14,7 +14,7 @@ import { writeStats } from './utils/stats';
  * @param {rocBuilder} rocBuilder - A rocBuilder to base everything on.
  * @returns {rocBuilder}
  */
-export default ({ previousValue: { buildConfig = {}, builder = require('webpack') }}) => (target) => () => {
+export default ({ previousValue: { buildConfig = {}, builder = require('webpack') } = {} }) => (target) => () => {
     const buildSettings = getSettings('build');
 
     const DEV = (buildSettings.mode === 'dev');
@@ -70,20 +70,24 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
         loaders: []
     };
 
+    buildConfig.babel = {
+        presets: [
+            require.resolve('babel-preset-es2015'),
+            require.resolve('babel-preset-stage-1')
+        ],
+        plugins: [
+            require.resolve('babel-plugin-transform-runtime'),
+            require.resolve('babel-plugin-transform-decorators-legacy')
+        ]
+    };
+
     // JS LOADER
     const jsLoader = {
+        id: 'babel',
         test: /\.js$/,
         loader: 'babel-loader',
         query: {
-            cacheDirectory: true,
-            presets: [
-                require.resolve('babel-preset-es2015'),
-                require.resolve('babel-preset-stage-1')
-            ],
-            plugins: [
-                require.resolve('babel-plugin-transform-runtime'),
-                require.resolve('babel-plugin-transform-decorators-legacy')
-            ]
+            cacheDirectory: true
         },
         include: runThroughBabel
     };
