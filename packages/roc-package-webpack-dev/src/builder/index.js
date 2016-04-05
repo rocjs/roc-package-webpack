@@ -57,7 +57,8 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
     buildConfig.output = {
         path: outputPath,
         filename: '[name].js',
-        chunkFilename: '[name].js'
+        chunkFilename: '[name].js',
+        publicPath: ''
     };
 
     /**
