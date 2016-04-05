@@ -45,5 +45,5 @@ __Connects to hook:__ `run-dev-command`
 
 Adds base Webpack configuration.
 
-__Connects to extension:__ `roc-package-webpack-dev`  
+__Connects to extension:__ Not specified  
 __Connects to hook:__ `build-webpack`  
