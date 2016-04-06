@@ -2,7 +2,8 @@ import {
     isString,
     isBoolean,
     isPath,
-    isArrayOrSingle
+    isArrayOrSingle,
+    isInteger
 } from 'roc/validators';
 
 const meta = {
@@ -13,6 +14,9 @@ const meta = {
                 mode: 'What mode the application should be built for. Possible values are "dev" and "dist".',
                 disableProgressbar: 'Should the progress bar be disabled for builds.',
                 name: 'The name of the generated application bundle.'
+            },
+            dev: {
+                port: 'Port for the dev server.'
             }
         },
 
@@ -24,6 +28,9 @@ const meta = {
                 input: isArrayOrSingle(isPath),
                 output: isArrayOrSingle(isPath),
                 name: isArrayOrSingle(isString)
+            },
+            dev: {
+                port: isInteger
             }
         }
     },
