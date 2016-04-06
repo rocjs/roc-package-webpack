@@ -25,6 +25,7 @@
   "author": "VG",
   "license": "MIT",
   "dependencies": {
+    "babel-core": "~6.7.4",
     "babel-loader": "~6.2.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.4.3",
