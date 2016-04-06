@@ -6,6 +6,7 @@ import { getValueFromPotentialObject } from 'roc-package-base-dev';
 
 import runThroughBabel from '../helpers/run-through-babel';
 import { writeStats } from './utils/stats';
+import { addTrailingSlash, getDevPath } from '../helpers';
 
 /**
  * Creates a builder.
@@ -58,7 +59,7 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
         path: outputPath,
         filename: '[name].js',
         chunkFilename: '[name].js',
-        publicPath: ''
+        publicPath: DIST ? addTrailingSlash(buildSettings.path) : getDevPath()
     };
 
     /**

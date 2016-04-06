@@ -7,6 +7,9 @@ const config = {
             mode: 'dist',
             disableProgressbar: false,
             name: 'app'
+        },
+        dev: {
+            port: 3001
         }
     }
 };
