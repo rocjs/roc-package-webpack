@@ -17,3 +17,4 @@
 | Name               | Description                                                                                              | Path                     | CLI option                 | Default          | Type                    | Required |
 | ------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------ | -------------------------- | ---------------- | ----------------------- | -------- |
 | debug              | Filter for debug messages that should be shown during development, see https://npmjs.com/package/debug.  | dev.debug                | --dev-debug                | `"roc:*"`        | `String`                | No       |
+| port               | Port for the dev server.                                                                                 | dev.port                 | --dev-port                 | `3001`           | `Integer`               | No       |
