@@ -16,7 +16,8 @@ const meta = {
                 name: 'The name of the generated application bundle.'
             },
             dev: {
-                port: 'Port for the dev server.'
+                port: 'Port for the dev server.',
+                host: 'The host to use during development, will be automatically defined if left empty.'
             }
         },
 
@@ -30,7 +31,8 @@ const meta = {
                 name: isArrayOrSingle(isString)
             },
             dev: {
-                port: isInteger
+                port: isInteger,
+                host: isString
             }
         }
     },
