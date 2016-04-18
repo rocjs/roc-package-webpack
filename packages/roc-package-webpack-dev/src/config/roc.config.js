@@ -9,7 +9,8 @@ const config = {
             name: 'app'
         },
         dev: {
-            port: 3001
+            port: 3001,
+            host: ''
         }
     }
 };

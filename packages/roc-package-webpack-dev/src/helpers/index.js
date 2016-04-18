@@ -6,6 +6,20 @@ import { getSettings } from 'roc';
 import config from '../config/roc.config.js';
 
 let onceDevPort = true;
+const devIp = devip();
+
+/**
+ * Returns the current dev host.
+ *
+ * @returns {string} The host that should be used.
+ */
+export function getDevHost() {
+    const { host } = getSettings('dev');
+    if (host) {
+        return host;
+    }
+    return devIp.length ? devIp[0] : 'localhost';
+}
 
 /**
  * Returns the current dev path.
@@ -16,12 +30,11 @@ let onceDevPort = true;
  * @returns {string} The complete dev path on the server including the port.
  */
 export function getDevPath(relativeBuildPath = '') {
-    const devIp = devip().length > 0 ? devip()[0] : 'localhost';
     const buildPath = relativeBuildPath && relativeBuildPath.slice(-1) !== '/' ?
         relativeBuildPath + '/' :
         relativeBuildPath;
 
-    return `http://${devIp}:${getDevPort()}/${buildPath}`;
+    return `http://${getDevHost()}:${getDevPort()}/${buildPath}`;
 }
 
 /**
