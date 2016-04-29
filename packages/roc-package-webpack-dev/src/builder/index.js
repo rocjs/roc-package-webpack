@@ -87,7 +87,7 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
     const jsLoader = {
         id: 'babel',
         test: /\.js$/,
-        loader: 'babel-loader',
+        loader: require.resolve('babel-loader'),
         query: {
             cacheDirectory: true
         },
@@ -99,7 +99,7 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
     // JSON LOADER
     const jsonLoader = {
         test: /\.json$/,
-        loader: 'json-loader'
+        loader: require.resolve('json-loader')
     };
 
     buildConfig.module.loaders.push(jsonLoader);
