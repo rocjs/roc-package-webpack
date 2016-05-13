@@ -21,7 +21,8 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
     const DEV = (buildSettings.mode === 'dev');
     const DIST = (buildSettings.mode === 'dist');
 
-    const ENV = DIST ? 'production' : 'development';
+    let ENV = DIST ? 'production' : null;
+    ENV = DEV ? 'development' : buildSettings.mode;
 
     const entry = getAbsolutePath(getValueFromPotentialObject(buildSettings.input, target));
     const outputPath = getAbsolutePath(getValueFromPotentialObject(buildSettings.output, target));
@@ -128,7 +129,8 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
         new builder.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(ENV),
             '__DEV__': DEV,
-            '__DIST__': DIST
+            '__DIST__': DIST,
+            '__CWD__': JSON.stringify(process.cwd())
         })
     );
 
