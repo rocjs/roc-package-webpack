@@ -21,8 +21,12 @@ export default ({ previousValue: { buildConfig = {}, builder = require('webpack'
     const DEV = (buildSettings.mode === 'dev');
     const DIST = (buildSettings.mode === 'dist');
 
-    let ENV = DIST ? 'production' : null;
-    ENV = DEV ? 'development' : buildSettings.mode;
+    let ENV = buildSettings.mode;
+    if (DIST) {
+        ENV = 'production';
+    } else if (DEV) {
+        ENV = 'development';
+    }
 
     const entry = getAbsolutePath(getValueFromPotentialObject(buildSettings.input, target));
     const outputPath = getAbsolutePath(getValueFromPotentialObject(buildSettings.output, target));
