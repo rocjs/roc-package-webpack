@@ -8,7 +8,7 @@ export default class RocExportPlugin {
         compiler.plugin('normal-module-factory', (normalModuleFactory) => {
             normalModuleFactory.plugin('before-resolve', (result, callback) => {
                 // We do not want to process Webpack special paths
-                if (result.request.match(/(\?|!)/)) {
+                if (!result || result.request.match(/(\?|!)/)) {
                     return callback(null, result);
                 }
 
