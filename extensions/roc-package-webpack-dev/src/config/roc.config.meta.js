@@ -22,7 +22,7 @@ export default {
             },
             disableProgressbar: {
                 description: 'Should the progress bar be disabled for builds.',
-                validator: required(notEmpty(isBoolean)),
+                validator: required(isBoolean),
             },
             name: {
                 description: 'The name of the generated application bundle.',
@@ -40,11 +40,11 @@ export default {
         dev: {
             port: {
                 description: 'Port for the dev server.',
-                validator: required(notEmpty(isInteger)),
+                validator: required(isInteger),
             },
             host: {
                 description: 'The host to use during development, will be automatically defined if left empty.',
-                validator: isString,
+                validator: notEmpty(isString),
             },
         },
     },
