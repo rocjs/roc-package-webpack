@@ -1,4 +1,9 @@
-const regexp = /(node_modules)\/(roc-[^/]*)?\/?([^/]*)/g;
+// const regexp = /(node_modules)\/(roc-[^/]*)?\/?([^/]*)/g;
+import { sep } from 'path';
+
+import createPathRegExp from 'roc/lib/require/createPathRegExp';
+
+const regexp = createPathRegExp(`(node_modules)${sep}(roc-[^${sep}]*)?${sep}?([^${sep}]*)`, 'g');
 
 export default function runThroughBabel(absPath) {
     /* This function will look at the absolute path for the current file

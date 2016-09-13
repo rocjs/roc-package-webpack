@@ -12,7 +12,6 @@ export default {
     meta,
     packages: [
         require.resolve('roc-abstract-package-base-dev'),
-        require.resolve('roc-package-webpack'),
     ],
     dependencies: {
         exports: generateDependencies(require('../../package.json'), 'webpack') // eslint-disable-line
@@ -36,11 +35,12 @@ export default {
             description: 'Used to create the final Webpack configuration object.',
             initialValue: {},
             returns: isObject(),
-            arguments: [{
-                name: 'target',
-                validator: isString,
-                description: 'The target for which the Webpack configuration should be build for.',
-            }],
+            arguments: {
+                target: {
+                    validator: isString,
+                    description: 'The target for which the Webpack configuration should be build for.',
+                },
+            },
         },
         'get-webpack-targets': {
             description: 'Used to inform which targets that should be considered as Webpack targets. Actions should ' +

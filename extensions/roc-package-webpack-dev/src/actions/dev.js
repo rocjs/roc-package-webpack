@@ -57,11 +57,11 @@ const createWatcher = (verbose, settings, target, webpackConfig, watcher) => {
 /**
  * Builds source files based on the configuration using Babel.
  *
- * @param {{verbose: boolean, settings: Object}} param - Roc settings object.
+ * @param {{context: Object}} param - Roc settings object.
  *
  * @returns {Function} - A correct Roc action.
  */
-export default ({ verbose, config: { settings } }) => (targets) => () => {
+export default ({ context: { verbose, config: { settings } } }) => (targets) => () => {
     const webpackTargets = invokeHook('get-webpack-targets');
 
     const validTargets = targets.filter((target) => webpackTargets.some((webpackTarget) => webpackTarget === target));

@@ -100,7 +100,7 @@ const build = (webpackConfig, target, config, verbose) => {
  *
  * @returns {Function} - A correct Roc action.
  */
-export default ({ verbose, config: { settings } }) => (targets) => () => {
+export default ({ context: { verbose, config: { settings } } }) => (targets) => () => {
     const webpackTargets = invokeHook('get-webpack-targets');
 
     const validTargets = targets.filter((target) => webpackTargets.some((webpackTarget) => webpackTarget === target));
