@@ -12,25 +12,27 @@ const multi = new MultiProgress();
 const log = initLog(name, version);
 
 const handleCompletion = (results) => {
-    log.small.ok('\nWebpack build completed!\n');
+    log.small.log('');
+    log.small.success('Webpack build completed!');
+    log.small.log('');
 
     for (const result of results) {
         if (result) {
             const { stats, target } = result;
             const { time, assets } = stats.toJson({ assets: true });
-            log.small.info(`${bold(target)} ${time} ms`);
+            log.small.log(`${bold(target)} ${time} ms`);
             for (const asset of assets) {
-                log.small.info(`${asset.name} ${pretty(asset.size)}`);
+                log.small.log(`${asset.name} ${pretty(asset.size)}`);
             }
             // Create a new line
-            log.small.info('');
+            log.small.log('');
         }
     }
 };
 
 const handleError = ({ error, target }) => {
     const errorMessage = target ? ` for ${bold(target)}` : '';
-    log.small.info('');
+    log.small.log('');
     log.large.error(
         `Build failed${errorMessage}.`,
         'Webpack Problem',
@@ -109,7 +111,7 @@ export default ({ context: { verbose, config: { settings } } }) => (targets) => 
         return Promise.resolve();
     }
 
-    log.small.note(`Starting the builder using "${settings.build.mode}" as the mode.\n`);
+    log.small.log(`Starting the builder using "${settings.build.mode}" as the mode.\n`);
 
     const promises = validTargets.map((target) => {
         const webpackConfig = invokeHook('build-webpack', target);
