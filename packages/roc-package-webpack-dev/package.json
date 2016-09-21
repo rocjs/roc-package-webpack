@@ -39,10 +39,10 @@
     "multi-progress": "~1.0.0",
     "node-watch": "~0.3.4",
     "prettysize": "0.0.3",
-    "roc": "^1.0.0-rc",
-    "roc-package-base": "^1.0.0-alpha",
-    "roc-package-base-dev": "^1.0.0-alpha",
-    "roc-package-webpack": "^1.0.0-alpha",
+    "roc": "1.0.0-rc.10",
+    "roc-package-base": "1.0.0-alpha.10",
+    "roc-package-base-dev": "1.0.0-alpha.10",
+    "roc-package-webpack": "1.0.0-alpha.11",
     "webpack": "~1.12.2"
   },
   "devDependencies": {

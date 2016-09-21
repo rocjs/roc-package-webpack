@@ -24,7 +24,7 @@
   "author": "VG",
   "license": "MIT",
   "dependencies": {
-    "roc-package-base": "^1.0.0-alpha"
+    "roc-package-base": "1.0.0-alpha.10"
   },
   "devDependencies": {
     "babel-eslint": "~5.0.0",
