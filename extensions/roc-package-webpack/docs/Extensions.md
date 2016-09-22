@@ -3,7 +3,7 @@
 The extensions that are used in the project, indirect and direct, in the order that they were added.
 
 ## Packages
-### roc-abstract-package-base — [v1.0.0-beta.0](https://www.npmjs.com/package/roc-abstract-package-base)
+### roc-abstract-package-base — [v1.0.0-beta.1](https://www.npmjs.com/package/roc-abstract-package-base)
 Package forming an abstract foundation of the Roc ecosystem.
 
 The package serves as a base from which other packages within the ecosystem are to be constructed.
