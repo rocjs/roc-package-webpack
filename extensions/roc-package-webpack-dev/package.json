@@ -1,0 +1,58 @@
+{
+  "name": "roc-package-webpack-dev",
+  "version": "1.0.0-beta.0",
+  "description": "Package providing Webpack support for Roc (Development)",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint"
+  },
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "roc",
+    "roc-package",
+    "webpack",
+    "roc-dev"
+  ],
+  "repository": "https://github.com/rocjs/roc-package-webpack/tree/master/extensions/roc-package-webpack-dev",
+  "author": "Verdens Gang AS",
+  "contributors": [{
+    "name": "Gustaf Dalemar"
+  }],
+  "license": "MIT",
+  "dependencies": {
+    "babel-core": "~6.7.4",
+    "babel-loader": "~6.2.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-runtime": "^6.4.3",
+    "babel-preset-es2015": "~6.5.0",
+    "babel-preset-stage-1": "~6.5.0",
+    "chalk": "~1.1.1",
+    "dev-ip": "~1.0.1",
+    "json-loader": "~0.5.3",
+    "lodash": "~4.5.1",
+    "mkdirp": "~0.5.1",
+    "multi-progress": "~1.0.0",
+    "node-watch": "~0.3.4",
+    "prettysize": "0.0.3",
+    "roc": "1.0.0-rc.11",
+    "roc-abstract-package-base-dev": "1.0.0-beta.1",
+    "roc-package-webpack": "1.0.0-beta.1",
+    "webpack": "~1.12.2",
+    "webpack-merge": "0.14.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "~6.1.2",
+    "eslint": "~3.0.1",
+    "eslint-config-airbnb-base": "~4.0.0",
+    "eslint-plugin-babel": "~3.3.0",
+    "eslint-plugin-import": "~1.10.2"
+  },
+  "roc": {
+    "packages": [
+      "./lib/index.js"
+    ]
+  }
+}
