@@ -108,7 +108,7 @@ export default ({ context: { verbose, config: { settings } } }) => (targets) => 
     const validTargets = targets.filter((target) => webpackTargets.some((webpackTarget) => webpackTarget === target));
 
     if (validTargets.length === 0) {
-        return Promise.resolve();
+        return () => Promise.resolve();
     }
 
     log.small.log(`Starting the builder using "${settings.build.mode}" as the mode.\n`);
