@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "roc-abstract-package-base": "1.0.0-beta.1"
+    "roc-abstract-package-base": "^1.0.0-beta.1"
   },
   "devDependencies": {
     "babel-eslint": "~6.1.2",
