@@ -9,6 +9,7 @@
   * [run-build-command](#run-build-command)
   * [run-dev-command](#run-dev-command)
 * [roc-package-webpack-dev](#roc-package-webpack-dev)
+  * [babel-config](#babel-config)
   * [build-webpack](#build-webpack)
   * [create-watchers](#create-watchers)
   * [get-webpack-targets](#get-webpack-targets)
@@ -73,6 +74,19 @@ __Expected return value:__ _Nothing_
 | targets | The targets use for dev, will be based on settings or a possible argument if defined. | `[String]` | Yes      | No           |
 
 ## roc-package-webpack-dev
+
+### babel-config
+
+Used to create a Babel configuration to be used in the Webpack build.
+
+__Initial value:__ `{}`  
+__Expected return value:__ `{}`
+
+#### Arguments
+
+| Name   | Description              | Type     | Required | Can be empty |
+| ------ | ------------------------ | -------- | -------- | ------------ |
+| target | The target that is used. | `String` | No       | Yes          |
 
 ### build-webpack
 
