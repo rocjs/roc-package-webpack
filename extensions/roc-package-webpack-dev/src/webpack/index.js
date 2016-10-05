@@ -7,7 +7,7 @@ import webpack from 'webpack';
 
 import runThroughBabel from '../helpers/runThroughBabel';
 import { addTrailingSlash, getDevPath } from '../helpers';
-import { name, version } from '../roc/util';
+import { name, version, invokeHook } from '../roc/util';
 
 import { writeStats } from './utils/stats';
 import RocExportPlugin from './utils/rocExportWebpackPlugin';
@@ -83,23 +83,13 @@ export default ({ previousValue: webpackConfig = {} }) => (target) => () => {
         loaders: [],
     };
 
-    newWebpackConfig.babel = {
-        presets: [
-            require.resolve('babel-preset-es2015'),
-            require.resolve('babel-preset-stage-1'),
-        ],
-        plugins: [
-            require.resolve('babel-plugin-transform-runtime'),
-            require.resolve('babel-plugin-transform-decorators-legacy'),
-        ],
-    };
-
     // JS LOADER
     const jsLoader = {
         id: 'babel',
         test: /\.js$/,
         loader: require.resolve('babel-loader'),
         query: {
+            ...invokeHook('babel-config', target),
             cacheDirectory: true,
         },
         include: runThroughBabel,
