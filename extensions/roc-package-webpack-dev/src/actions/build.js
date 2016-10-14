@@ -114,7 +114,8 @@ export default ({ context: { verbose, config: { settings } } }) => (targets) => 
     log.small.log(`Starting the builder using "${settings.build.mode}" as the mode.\n`);
 
     const promises = validTargets.map((target) => {
-        const webpackConfig = invokeHook('build-webpack', target);
+        const babelConfig = invokeHook('babel-config', target);
+        const webpackConfig = invokeHook('build-webpack', target, babelConfig);
         return build(webpackConfig, target, settings, verbose);
     });
 

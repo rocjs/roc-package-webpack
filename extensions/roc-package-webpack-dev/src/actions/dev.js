@@ -85,7 +85,8 @@ export default ({ context: { verbose, config: { settings } } }) => (targets) => 
 
     // Build each one in order
     return Promise.all(targets.map(async function builders(target) {
-        const webpackConfig = invokeHook('build-webpack', target);
+        const babelConfig = invokeHook('babel-config', target);
+        const webpackConfig = invokeHook('build-webpack', target, babelConfig);
         return await createWatcher(verbose, newSettings, target, webpackConfig, watchers);
     }));
 };

@@ -7,7 +7,7 @@ import webpack from 'webpack';
 
 import runThroughBabel from '../helpers/runThroughBabel';
 import { addTrailingSlash, getDevPath } from '../helpers';
-import { name, version, invokeHook } from '../roc/util';
+import { name, version } from '../roc/util';
 
 import { writeStats } from './utils/stats';
 import RocExportPlugin from './utils/rocExportWebpackPlugin';
@@ -21,7 +21,7 @@ const log = initLog(name, version);
  * @param {rocBuilder} rocBuilder - A rocBuilder to base everything on.
  * @returns {rocBuilder}
  */
-export default ({ previousValue: webpackConfig = {} }) => (target) => () => {
+export default () => (target, babelConfig) => (webpackConfig = {}) => {
     const newWebpackConfig = { ...webpackConfig };
     const buildSettings = getSettings('build');
 
@@ -89,7 +89,7 @@ export default ({ previousValue: webpackConfig = {} }) => (target) => () => {
         test: /\.js$/,
         loader: require.resolve('babel-loader'),
         query: {
-            ...invokeHook('babel-config', target),
+            ...babelConfig,
             cacheDirectory: true,
         },
         include: runThroughBabel,

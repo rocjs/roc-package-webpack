@@ -4,7 +4,7 @@ import { isString, isObject, isFunction, isArray } from 'roc/validators';
 import config from '../config/roc.config.js';
 import meta from '../config/roc.config.meta.js';
 
-import { name } from './util';
+import { invokeHook } from './util';
 
 const lazyRequire = lazyFunctionRequire(require);
 
@@ -23,16 +23,18 @@ export default {
     },
     actions: [{
         hook: 'babel-config',
-        extension: name,
-        action: () => () => (babelConfig) => {
-            babelConfig.presets.push(
-                require.resolve('babel-preset-es2015'),
-                require.resolve('babel-preset-stage-1')
-            );
-            babelConfig.plugins.push(
-                require.resolve('babel-plugin-transform-runtime'),
-                require.resolve('babel-plugin-transform-decorators-legacy')
-            );
+        action: () => (target) => (babelConfig) => {
+            const targets = invokeHook('get-webpack-targets');
+            if (targets.indexOf(target) !== -1) {
+                babelConfig.presets.push(
+                    require.resolve('babel-preset-es2015'),
+                    require.resolve('babel-preset-stage-1')
+                );
+                babelConfig.plugins.push(
+                    require.resolve('babel-plugin-transform-runtime'),
+                    require.resolve('babel-plugin-transform-decorators-legacy')
+                );
+            }
 
             return babelConfig;
         },
@@ -59,6 +61,10 @@ export default {
                 target: {
                     validator: isString,
                     description: 'The target for which the Webpack configuration should be build for.',
+                },
+                babelConfig: {
+                    validator: isObject(),
+                    description: 'The Babel configuration that should be used for the Webpack build.',
                 },
             },
         },
