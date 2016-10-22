@@ -37,7 +37,9 @@ export default class RocExportPlugin {
                 }
 
                 // Use resolve.alias to use the alias if one exists and match
+                const beforeAlias = request;
                 request = getAlias(request);
+                const afterAlias = request;
 
                 // Try to resolve the dependency against the roc dependency context
                 request = this.resolveRequest(request, result.context);
@@ -48,6 +50,9 @@ export default class RocExportPlugin {
                         // We got an error and will try again with fallback enabled
                         request = this.resolveRequest(request, result.context, true);
                     }
+
+                    // If we have not changed the request we want to revert the alias change
+                    request = request === afterAlias ? beforeAlias : request;
 
                     // Put the request back together with the possible loaders and the possible query
                     result.request = `${loaders}${request}${query}`; // eslint-disable-line
