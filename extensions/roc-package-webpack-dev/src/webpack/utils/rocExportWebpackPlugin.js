@@ -7,35 +7,50 @@ export default class RocExportPlugin {
 
     apply(compiler) {
         const getAlias = createGetAlias(compiler.options.resolve.alias); // eslint-disable-line
+        const isExternal = createIsExternal(compiler.options.externals); // eslint-disable-line
 
-        // We assume that loaders will be managed in Webpack-land, that is we will not manage them in exports
+        // We assume that loaders will be managed in Webpack-land, meaning that we will not manage
+        // them using exports in Roc
         compiler.plugin('normal-module-factory', (normalModuleFactory) => {
             normalModuleFactory.plugin('before-resolve', (result, callback) => {
-                // We do not want to process:
-                // 1. No result
-                // 2. Webpack special paths
-                // 3. Externals
-                if (
-                    !result ||
-                    result.request.match(/(\?|!)/) ||
-                    findExternal(result.request, compiler.options.externals, result.context)  // eslint-disable-line
-                ) {
+                // Do nothing if it is external or falsy
+                if (!result || isExternal(result.request, result.context)) {
                     return callback(null, result);
                 }
 
+                let request = result.request;
+
+                // Strip loaders
+                let loaders = '';
+                const finalBang = request.lastIndexOf('!');
+                if (finalBang >= 0) {
+                    loaders = request.substring(0, finalBang + 1);
+                    request = request.substring(finalBang + 1);
+                }
+
+                // Strip resource query
+                let query = '';
+                const finalQuestionMark = request.lastIndexOf('?');
+                if (finalQuestionMark >= 0) {
+                    query = request.substring(finalQuestionMark);
+                    request = request.substring(0, finalQuestionMark);
+                }
+
                 // Use resolve.alias to use the alias if one exists and match
-                result.request = getAlias(result.request); // eslint-disable-line
+                request = getAlias(request);
 
                 // Try to resolve the dependency against the roc dependency context
-                result.request = this.resolveRequest(result.request, result.context); // eslint-disable-line
+                request = this.resolveRequest(request, result.context);
 
                 // Test to see if we can resolve the dependency
-                return compiler.resolvers.normal.resolve(result.context, result.request, (err) => {
+                return compiler.resolvers.normal.resolve(result.context, request, (err) => {
                     if (err) {
                         // We got an error and will try again with fallback enabled
-                        result.request = this.resolveRequest(result.request, result.context, true); // eslint-disable-line
+                        request = this.resolveRequest(request, result.context, true);
                     }
 
+                    // Put the request back together with the possible loaders and the possible query
+                    result.request = `${loaders}${request}${query}`; // eslint-disable-line
                     return callback(null, result);
                 });
             });
@@ -43,37 +58,39 @@ export default class RocExportPlugin {
     }
 }
 
-function findExternal(request, externals, context) {
-    if (!externals) {
-        return false;
-    }
+function createIsExternal(externals) {
+    return (request, context) => {
+        if (!externals) {
+            return false;
+        }
 
-    if (isString(externals)) {
-        return request === externals;
-    }
+        if (isString(externals)) {
+            return request === externals;
+        }
 
-    if (Array.isArray(externals)) {
-        return externals.some((external) => findExternal(request, external, context));
-    }
+        if (Array.isArray(externals)) {
+            return externals.some((external) => createIsExternal(external)(request, context));
+        }
 
-    if (isRegExp(externals)) {
-        return externals.test(request);
-    }
+        if (isRegExp(externals)) {
+            return externals.test(request);
+        }
 
-    if (isFunction(externals)) {
-        let functionExternalFound = false;
-        externals(context, request, (error, result) => {
-            if (error) {
-                functionExternalFound = false;
-            } else {
-                functionExternalFound = findExternal(request, result, context);
-            }
-        });
-        return functionExternalFound;
-    }
+        if (isFunction(externals)) {
+            let functionExternalFound = false;
+            externals(context, request, (error, result) => {
+                if (error) {
+                    functionExternalFound = false;
+                } else {
+                    functionExternalFound = createIsExternal(result)(request, context);
+                }
+            });
+            return functionExternalFound;
+        }
 
-    // Otherwise it is a Object
-    return Object.keys(externals).some((key) => request === key);
+        // Otherwise it is a Object
+        return Object.keys(externals).some((key) => request === key);
+    };
 }
 
 // Based on code from enhanced-resolve
