@@ -1,4 +1,4 @@
-import { isString, isFunction, isRegExp, isPlainObject } from 'lodash';
+import { isString, isPlainObject } from 'lodash';
 
 export default class RocExportPlugin {
     constructor(resolveRequest) {
@@ -7,95 +7,40 @@ export default class RocExportPlugin {
 
     apply(compiler) {
         const getAlias = createGetAlias(compiler.options.resolve.alias); // eslint-disable-line
-        const isExternal = createIsExternal(compiler.options.externals); // eslint-disable-line
+        const resolveRequest = this.resolveRequest;
 
         // We assume that loaders will be managed in Webpack-land, meaning that we will not manage
         // them using exports in Roc
-        compiler.plugin('normal-module-factory', (normalModuleFactory) => {
-            normalModuleFactory.plugin('before-resolve', (result, callback) => {
-                // Do nothing if it is external or falsy
-                if (!result || isExternal(result.request, result.context)) {
-                    return callback(null, result);
+        compiler.resolvers.normal.plugin('module', function (result, next) {
+            let request = result.request;
+
+            // Use resolve.alias to use the alias if one exists and match
+            const beforeAlias = request;
+            request = getAlias(request);
+            const afterAlias = request;
+
+            // Try to resolve the dependency against the roc dependency context
+            request = resolveRequest(request, result.path);
+
+            return this.doResolve('normal', { ...result, request }, (err) => {
+                if (err) {
+                    // We got an error and will try again with fallback enabled
+                    request = resolveRequest(request, result.path, true);
                 }
 
-                let request = result.request;
+                // If we have not changed the request we want to revert the alias change
+                request = request === afterAlias ? beforeAlias : request;
 
-                // Strip loaders
-                let loaders = '';
-                const finalBang = request.lastIndexOf('!');
-                if (finalBang >= 0) {
-                    loaders = request.substring(0, finalBang + 1);
-                    request = request.substring(finalBang + 1);
+                // Update the resolving with the new value if the request was modified
+                if (request !== result.request) {
+                    return this.doResolve(['file'], { ...result, request }, next);
                 }
 
-                // Strip resource query
-                let query = '';
-                const finalQuestionMark = request.lastIndexOf('?');
-                if (finalQuestionMark >= 0) {
-                    query = request.substring(finalQuestionMark);
-                    request = request.substring(0, finalQuestionMark);
-                }
-
-                // Use resolve.alias to use the alias if one exists and match
-                const beforeAlias = request;
-                request = getAlias(request);
-                const afterAlias = request;
-
-                // Try to resolve the dependency against the roc dependency context
-                request = this.resolveRequest(request, result.context);
-
-                // Test to see if we can resolve the dependency
-                return compiler.resolvers.normal.resolve(result.context, request, (err) => {
-                    if (err) {
-                        // We got an error and will try again with fallback enabled
-                        request = this.resolveRequest(request, result.context, true);
-                    }
-
-                    // If we have not changed the request we want to revert the alias change
-                    request = request === afterAlias ? beforeAlias : request;
-
-                    // Put the request back together with the possible loaders and the possible query
-                    result.request = `${loaders}${request}${query}`; // eslint-disable-line
-                    return callback(null, result);
-                });
+                // Do nothing and just pass through
+                return next();
             });
         });
     }
-}
-
-function createIsExternal(externals) {
-    return (request, context) => {
-        if (!externals) {
-            return false;
-        }
-
-        if (isString(externals)) {
-            return request === externals;
-        }
-
-        if (Array.isArray(externals)) {
-            return externals.some((external) => createIsExternal(external)(request, context));
-        }
-
-        if (isRegExp(externals)) {
-            return externals.test(request);
-        }
-
-        if (isFunction(externals)) {
-            let functionExternalFound = false;
-            externals(context, request, (error, result) => {
-                if (error) {
-                    functionExternalFound = false;
-                } else {
-                    functionExternalFound = createIsExternal(result)(request, context);
-                }
-            });
-            return functionExternalFound;
-        }
-
-        // Otherwise it is a Object
-        return Object.keys(externals).some((key) => request === key);
-    };
 }
 
 // Based on code from enhanced-resolve
