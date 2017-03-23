@@ -13,7 +13,7 @@ export default class RocExportPlugin {
         // We assume that loaders will be managed in Webpack-land, meaning that we will not manage
         // them using exports in Roc
         compiler.resolvers.normal.plugin('module', function (result, next) {
-            if (resolving[cacheKey(result)]) {
+            if (resolving[cacheKey(result)]) { // eslint-disable-line
                 return next();
             }
 
@@ -27,9 +27,9 @@ export default class RocExportPlugin {
             // Try to resolve the dependency against the roc dependency context
             request = resolveRequest(request, result.path);
 
-            resolving[cacheKey(result)] = true;
+            resolving[cacheKey(result)] = true; // eslint-disable-line
             return this.resolve(result.path, request, (err) => {
-                resolving[cacheKey(result)] = false;
+                resolving[cacheKey(result)] = false; // eslint-disable-line
 
                 if (err) {
                     // We got an error and will try again with fallback enabled
@@ -41,7 +41,7 @@ export default class RocExportPlugin {
 
                 // Update the resolving with the new value if the request was modified
                 if (request !== result.request) {
-                    return this.doResolve(['file'], { ...result, request }, next);
+                    return this.doResolve('file', { ...result, request }, next);
                 }
 
                 // Do nothing and just pass through
