@@ -8,5 +8,6 @@ before_install:
   - npm install -g npm
 before_script:
   - npm run link
+  - npm run build
 after_success:
   - npm start build && npm start docs

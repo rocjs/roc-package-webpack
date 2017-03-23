@@ -9,7 +9,7 @@
     "lint": "rid lint:alias",
     "link": "rid link",
     "link:all": "rid link roc,roc-abstract-package-base-dev,roc-abstract-package-base",
-    "test": "npm run lint"
+    "test": "npm run lint && node extensions/roc-package-webpack-dev/test/index.js"
   },
   "devDependencies": {
     "@rocjs/roc-internal-dev": "^2.0.0",
