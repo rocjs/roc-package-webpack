@@ -8,10 +8,15 @@ export default class RocExportPlugin {
     apply(compiler) {
         const getAlias = createGetAlias(compiler.options.resolve.alias); // eslint-disable-line
         const resolveRequest = this.resolveRequest;
+        const resolving = {};
 
         // We assume that loaders will be managed in Webpack-land, meaning that we will not manage
         // them using exports in Roc
         compiler.resolvers.normal.plugin('module', function (result, next) {
+            if (resolving[cacheKey(result)]) { // eslint-disable-line
+                return next();
+            }
+
             let request = result.request;
 
             // Use resolve.alias to use the alias if one exists and match
@@ -22,7 +27,10 @@ export default class RocExportPlugin {
             // Try to resolve the dependency against the roc dependency context
             request = resolveRequest(request, result.path);
 
-            return this.doResolve('normal', { ...result, request }, (err) => {
+            resolving[cacheKey(result)] = true; // eslint-disable-line
+            return this.resolve(result.path, request, (err) => {
+                resolving[cacheKey(result)] = false; // eslint-disable-line
+
                 if (err) {
                     // We got an error and will try again with fallback enabled
                     request = resolveRequest(request, result.path, true);
@@ -33,7 +41,7 @@ export default class RocExportPlugin {
 
                 // Update the resolving with the new value if the request was modified
                 if (request !== result.request) {
-                    return this.doResolve(['file'], { ...result, request }, next);
+                    return this.doResolve('file', { ...result, request }, next);
                 }
 
                 // Do nothing and just pass through
@@ -41,6 +49,10 @@ export default class RocExportPlugin {
             });
         });
     }
+}
+
+function cacheKey(result) {
+    return `${result.path}@@@@@${result.request}`;
 }
 
 // Based on code from enhanced-resolve
