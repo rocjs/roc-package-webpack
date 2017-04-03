@@ -9,6 +9,7 @@ import { invokeHook } from './util';
 const lazyRequire = lazyFunctionRequire(require);
 
 export default {
+    required: { roc: '^1.0.0-rc.18' },
     description: 'Package providing module support.',
     config,
     meta,

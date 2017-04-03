@@ -8,12 +8,16 @@ export default class RocExportPlugin {
     apply(compiler) {
         const getAlias = createGetAlias(compiler.options.resolve.alias); // eslint-disable-line
         const resolveRequest = this.resolveRequest;
-        const resolving = {};
+        // Create a random identifer that can be used to detect when our resolver is called
+        // recusively so we can prevent an infinite loop
+        const recursiveIdentifier = `?rocExportWebpackPlugin=${Math.floor(Math.random() * 10 * 10000)}`;
+        const createResolver = (resolver) =>
+            (request, context, callback) => resolver(context, request + recursiveIdentifier, callback);
 
         // We assume that loaders will be managed in Webpack-land, meaning that we will not manage
         // them using exports in Roc
-        compiler.resolvers.normal.plugin('module', function (result, next) {
-            if (resolving[cacheKey(result)]) { // eslint-disable-line
+        compiler.resolvers.normal.plugin('module', function rocExportWebpackPlugin(result, next) {
+            if (result.query === recursiveIdentifier) {
                 return next();
             }
 
@@ -24,36 +28,64 @@ export default class RocExportPlugin {
             request = getAlias(request);
             const afterAlias = request;
 
+            // Create resolver that works with Roc
+            const resolver = createResolver(this.resolve);
+
             // Try to resolve the dependency against the roc dependency context
-            request = resolveRequest(request, result.path);
-
-            resolving[cacheKey(result)] = true; // eslint-disable-line
-            return this.resolve(result.path, request, (err) => {
-                resolving[cacheKey(result)] = false; // eslint-disable-line
-
+            return resolveRequest(request, result.path, { resolver }, (err, newRequest) => {
+                // If we failed to resolve we want to propagate the error
                 if (err) {
-                    // We got an error and will try again with fallback enabled
-                    request = resolveRequest(request, result.path, true);
+                    return next(err);
                 }
 
-                // If we have not changed the request we want to revert the alias change
-                request = request === afterAlias ? beforeAlias : request;
+                // Remove recursiveIdentifier if present
+                newRequest = newRequest.replace(recursiveIdentifier, ''); // eslint-disable-line
 
-                // Update the resolving with the new value if the request was modified
-                if (request !== result.request) {
-                    return this.doResolve('file', { ...result, request }, next);
-                }
+                return this.resolve(result.path, newRequest + recursiveIdentifier, (error) => {
+                    if (error) {
+                        // We got an error and will try again with fallback enabled
+                        return resolveRequest(
+                            request,
+                            result.path,
+                            { fallback: true, resolver },
+                            (fallbackError, newRequestFallback) => {
+                                if (fallbackError) {
+                                    return next(fallbackError);
+                                }
 
-                // Do nothing and just pass through
-                return next();
+                                // Remove recursiveIdentifier if present
+                                newRequestFallback = newRequestFallback.replace(recursiveIdentifier, ''); // eslint-disable-line
+
+                                // If we have not changed the request we want to revert the alias change
+                                request = newRequestFallback === afterAlias ? beforeAlias : newRequestFallback;
+
+                                // Update the resolving with the new value if the request was modified
+                                if (request !== result.request) {
+                                    return this.doResolve('file', { ...result, request }, next);
+                                }
+
+                                // Do nothing and just pass through
+                                return next();
+                            }
+                        );
+                    }
+
+                    // If we have not changed the request we want to revert the alias change
+                    request = newRequest === afterAlias ? beforeAlias : newRequest;
+
+                    // Update the resolving with the new value if the request was modified
+                    if (request !== result.request) {
+                        return this.doResolve('file', { ...result, request }, next);
+                    }
+
+                    // Do nothing and just pass through
+                    return next();
+                });
             });
         });
     }
 }
 
-function cacheKey(result) {
-    return `${result.path}@@@@@${result.request}`;
-}
 
 // Based on code from enhanced-resolve
 function createGetAlias(aliases) {
