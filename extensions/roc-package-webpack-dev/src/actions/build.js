@@ -51,7 +51,7 @@ const build = (webpackConfig, target, config, verbose) => {
             .then(() => {
                 const compiler = webpack(webpackConfig);
 
-                if (!config.build.disableProgressbar) {
+                if (process.stdout.isTTY && !config.build.disableProgressbar) {
                     const bar = multi.newBar(`Building ${target} [:bar] :percent :elapsed s :webpackInfo`, {
                         complete: '=',
                         incomplete: ' ',
@@ -67,6 +67,9 @@ const build = (webpackConfig, target, config, verbose) => {
                             webpackInfo: msg.substring(0, 20),
                         });
                     }));
+                } else {
+                    // We print a short message when the progressbar is not used
+                    console.log(`Building ${target}, please be patient...`);
                 }
 
                 compiler.run((error, stats) => {
