@@ -125,7 +125,7 @@ export default () => (target, babelConfig) => (webpackConfig = {}) => {
     newWebpackConfig.plugins = [];
 
     newWebpackConfig.plugins.push(
-        new RocExportPlugin(getResolveRequest('Webpack')),
+        new RocExportPlugin(getResolveRequest('Webpack', true)),
 
         // process.env.NODE_ENV is used by React and some other libs to determine what to run
         new webpack.DefinePlugin({
