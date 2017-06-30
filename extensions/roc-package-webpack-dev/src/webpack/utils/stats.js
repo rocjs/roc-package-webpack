@@ -11,28 +11,31 @@ import { getSettings } from 'roc';
  * @returns {object} A object with keys for 'script' and 'css'
  * @private
  */
-export function parseStats(stats, publicPath = '', name = 'app') {
+export function parseStats(stats, publicPath = '') {
+    const { assetsByChunkName } = stats;
+
     // get chunks by name and extensions
     const getChunks = (n, ext = 'js') => {
-        let chunk = stats.assetsByChunkName[n];
-
-        // a chunk could be a string or an array, so make sure it is an array
-        if (!(Array.isArray(chunk))) {
-            chunk = [chunk];
-        }
+        let chunk = assetsByChunkName[n];
 
         return chunk
             .filter((chunkName) => extname(chunkName) === `.${ext}`)
-            .map((chunkName) => publicPath + chunkName);
+            .map((chunkName) => publicPath + chunkName)
+            .shift();
     };
 
-    const script = getChunks(name, 'js');
-    const css = getChunks(name, 'css');
+    const entryKeys = Object.keys(assetsByChunkName);
 
-    return {
-        script,
-        css,
-    };
+    const getAssets = entryKeys.reduce((acc, entry) => {
+        acc[entry] = {
+            js: getChunks(val) || '',
+            css: getChunks(val, 'css') || ''
+        };
+
+        return acc;
+    }, {});
+
+    return getAssets;
 }
 
 /**
@@ -50,9 +53,8 @@ export function writeStats(stats) {
     const analysisFilepath = join(this.options.output.path, 'webpack-analysis.json');
 
     const json = stats.toJson();
-    const name = getSettings('build').name;
 
-    const content = parseStats(json, publicPath, name);
+    const content = parseStats(json, publicPath);
 
     writeFileSync(statsFilepath, JSON.stringify(content));
     writeFileSync(analysisFilepath, JSON.stringify(json));
