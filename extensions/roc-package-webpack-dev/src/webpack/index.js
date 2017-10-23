@@ -28,11 +28,15 @@ export default () => (target, babelConfig) => (webpackConfig = {}) => {
     const DEV = (buildSettings.mode === 'dev');
     const DIST = (buildSettings.mode === 'dist');
 
-    let ENV = buildSettings.mode;
-    if (DIST) {
-        ENV = 'production';
-    } else if (DEV) {
-        ENV = 'development';
+    // Use process.env.NODE_ENV as ENV and fallback to use the mode if not defined
+    let ENV = process.env.NODE_ENV;
+    if (!ENV) {
+        ENV = buildSettings.mode;
+        if (DIST) {
+            ENV = 'production';
+        } else if (DEV) {
+            ENV = 'development';
+        }
     }
 
     const entry = getAbsolutePath(getValueFromPotentialObject(buildSettings.input, target));
